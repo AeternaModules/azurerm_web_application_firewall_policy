@@ -1,6 +1,6 @@
-variable "web_application_firewall_policys" {
+variable "web_application_firewall_policies" {
   description = <<EOT
-Map of web_application_firewall_policys, attributes below
+Map of web_application_firewall_policies, attributes below
 Required:
     - location
     - name
@@ -75,8 +75,8 @@ EOT
             excluded_rules  = optional(list(string))
             rule_group_name = string
           }))
-          type    = optional(string, "OWASP")
-          version = optional(string, "3.2")
+          type    = optional(string) # Default: "OWASP"
+          version = optional(string) # Default: "3.2"
         }))
         match_variable          = string
         selector                = string
@@ -86,18 +86,18 @@ EOT
         rule_group_override = optional(object({
           rule = optional(object({
             action  = optional(string)
-            enabled = optional(bool, false)
+            enabled = optional(bool) # Default: false
             id      = string
           }))
           rule_group_name = string
         }))
-        type    = optional(string, "OWASP")
+        type    = optional(string) # Default: "OWASP"
         version = string
       })
     })
     custom_rules = optional(object({
       action              = string
-      enabled             = optional(bool, true)
+      enabled             = optional(bool) # Default: true
       group_rate_limit_by = optional(string)
       match_conditions = object({
         match_values = optional(list(string))
@@ -116,24 +116,24 @@ EOT
       rule_type            = string
     }))
     policy_settings = optional(object({
-      enabled                                   = optional(bool, true)
+      enabled                                   = optional(bool) # Default: true
       file_upload_enforcement                   = optional(bool)
-      file_upload_limit_in_mb                   = optional(number, 100)
-      js_challenge_cookie_expiration_in_minutes = optional(number, 30)
+      file_upload_limit_in_mb                   = optional(number) # Default: 100
+      js_challenge_cookie_expiration_in_minutes = optional(number) # Default: 30
       log_scrubbing = optional(object({
-        enabled = optional(bool, true)
+        enabled = optional(bool) # Default: true
         rule = optional(object({
-          enabled                 = optional(bool, true)
+          enabled                 = optional(bool) # Default: true
           match_variable          = string
           selector                = optional(string)
-          selector_match_operator = optional(string, "Equals")
+          selector_match_operator = optional(string) # Default: "Equals"
         }))
       }))
-      max_request_body_size_in_kb      = optional(number, 128)
-      mode                             = optional(string, "Prevention")
-      request_body_check               = optional(bool, true)
-      request_body_enforcement         = optional(bool, true)
-      request_body_inspect_limit_in_kb = optional(number, 128)
+      max_request_body_size_in_kb      = optional(number) # Default: 128
+      mode                             = optional(string) # Default: "Prevention"
+      request_body_check               = optional(bool)   # Default: true
+      request_body_enforcement         = optional(bool)   # Default: true
+      request_body_inspect_limit_in_kb = optional(number) # Default: 128
     }))
   }))
 }

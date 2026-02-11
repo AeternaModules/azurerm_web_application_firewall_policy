@@ -1,5 +1,5 @@
-output "web_application_firewall_policys" {
+output "web_application_firewall_policies" {
   description = "All web_application_firewall_policy resources"
-  value       = azurerm_web_application_firewall_policy.web_application_firewall_policys
+  value       = azurerm_web_application_firewall_policy.web_application_firewall_policies
 }
 
