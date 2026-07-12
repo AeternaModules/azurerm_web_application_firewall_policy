@@ -1,3 +1,7 @@
+output "web_application_firewall_policies_id" {
+  description = "Map of id values across all web_application_firewall_policies, keyed the same as var.web_application_firewall_policies"
+  value       = { for k, v in azurerm_web_application_firewall_policy.web_application_firewall_policies : k => v.id }
+}
 output "web_application_firewall_policies_custom_rules" {
   description = "Map of custom_rules values across all web_application_firewall_policies, keyed the same as var.web_application_firewall_policies"
   value       = { for k, v in azurerm_web_application_firewall_policy.web_application_firewall_policies : k => v.custom_rules }
