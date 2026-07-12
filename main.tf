@@ -8,13 +8,13 @@ resource "azurerm_web_application_firewall_policy" "web_application_firewall_pol
 
   managed_rules {
     dynamic "exclusion" {
-      for_each = each.value.managed_rules.exclusion != null ? [each.value.managed_rules.exclusion] : []
+      for_each = each.value.managed_rules.exclusion != null ? each.value.managed_rules.exclusion : []
       content {
         dynamic "excluded_rule_set" {
           for_each = exclusion.value.excluded_rule_set != null ? [exclusion.value.excluded_rule_set] : []
           content {
             dynamic "rule_group" {
-              for_each = excluded_rule_set.value.rule_group != null ? [excluded_rule_set.value.rule_group] : []
+              for_each = excluded_rule_set.value.rule_group != null ? excluded_rule_set.value.rule_group : []
               content {
                 excluded_rules  = rule_group.value.excluded_rules
                 rule_group_name = rule_group.value.rule_group_name
@@ -29,41 +29,50 @@ resource "azurerm_web_application_firewall_policy" "web_application_firewall_pol
         selector_match_operator = exclusion.value.selector_match_operator
       }
     }
-    managed_rule_set {
-      dynamic "rule_group_override" {
-        for_each = each.value.managed_rules.managed_rule_set.rule_group_override != null ? [each.value.managed_rules.managed_rule_set.rule_group_override] : []
-        content {
-          dynamic "rule" {
-            for_each = rule_group_override.value.rule != null ? [rule_group_override.value.rule] : []
-            content {
-              action  = rule.value.action
-              enabled = rule.value.enabled
-              id      = rule.value.id
+    dynamic "managed_rule_set" {
+      for_each = each.value.managed_rules.managed_rule_set
+      content {
+        dynamic "rule_group_override" {
+          for_each = managed_rule_set.value.rule_group_override != null ? managed_rule_set.value.rule_group_override : []
+          content {
+            dynamic "rule" {
+              for_each = rule_group_override.value.rule != null ? rule_group_override.value.rule : []
+              content {
+                action  = rule.value.action
+                enabled = rule.value.enabled
+                id      = rule.value.id
+              }
             }
+            rule_group_name = rule_group_override.value.rule_group_name
           }
-          rule_group_name = rule_group_override.value.rule_group_name
         }
+        type    = managed_rule_set.value.type
+        version = managed_rule_set.value.version
       }
-      type    = each.value.managed_rules.managed_rule_set.type
-      version = each.value.managed_rules.managed_rule_set.version
     }
   }
 
   dynamic "custom_rules" {
-    for_each = each.value.custom_rules != null ? [each.value.custom_rules] : []
+    for_each = each.value.custom_rules != null ? each.value.custom_rules : []
     content {
       action              = custom_rules.value.action
       enabled             = custom_rules.value.enabled
       group_rate_limit_by = custom_rules.value.group_rate_limit_by
-      match_conditions {
-        match_values = custom_rules.value.match_conditions.match_values
-        match_variables {
-          selector      = custom_rules.value.match_conditions.match_variables.selector
-          variable_name = custom_rules.value.match_conditions.match_variables.variable_name
+      dynamic "match_conditions" {
+        for_each = custom_rules.value.match_conditions
+        content {
+          match_values = match_conditions.value.match_values
+          dynamic "match_variables" {
+            for_each = match_conditions.value.match_variables
+            content {
+              selector      = match_variables.value.selector
+              variable_name = match_variables.value.variable_name
+            }
+          }
+          negation_condition = match_conditions.value.negation_condition
+          operator           = match_conditions.value.operator
+          transforms         = match_conditions.value.transforms
         }
-        negation_condition = custom_rules.value.match_conditions.negation_condition
-        operator           = custom_rules.value.match_conditions.operator
-        transforms         = custom_rules.value.match_conditions.transforms
       }
       name                 = custom_rules.value.name
       priority             = custom_rules.value.priority
@@ -85,7 +94,7 @@ resource "azurerm_web_application_firewall_policy" "web_application_firewall_pol
         content {
           enabled = log_scrubbing.value.enabled
           dynamic "rule" {
-            for_each = log_scrubbing.value.rule != null ? [log_scrubbing.value.rule] : []
+            for_each = log_scrubbing.value.rule != null ? log_scrubbing.value.rule : []
             content {
               enabled                 = rule.value.enabled
               match_variable          = rule.value.match_variable
