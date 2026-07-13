@@ -160,100 +160,94 @@ EOT
     ])
     error_message = "Each match_variables list must contain at least 1 items"
   }
-  # --- Unconfirmed validation candidates, derived from azurerm_web_application_firewall_policy's provider source ---
-  # Not auto-enabled: either a bespoke provider validator we can't safely translate,
-  # or a path that crosses a list-typed block (needs its own for_each wrapping).
-  # Review, translate into a real validation{} block above, and delete once confirmed.
-  # path: name
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: location
-  #   source:    location.EnhancedValidate: no recognizable `if ... { errors = append(...) }` pattern - read it by hand
-  # path: resource_group_name
-  #   condition: length(value) <= 90
-  #   message:   [from resourcegroups.ValidateName: invalid when len(value) > 90]
-  #   source:    [from resourcegroups.ValidateName: invalid when len(value) > 90]
-  # path: resource_group_name
-  #   condition: !endswith(value, ".")
-  #   message:   [from resourcegroups.ValidateName: must not end with "."]
-  #   source:    [from resourcegroups.ValidateName: must not end with "."]
-  # path: resource_group_name
-  #   condition: length(value) != 0
-  #   message:   [from resourcegroups.ValidateName: invalid when len(value) == 0]
-  #   source:    [from resourcegroups.ValidateName: invalid when len(value) == 0]
-  # path: resource_group_name
-  #   source:    [from resourcegroups.ValidateName] !matched
-  # path: custom_rules.action
-  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
-  # path: custom_rules.match_conditions.match_variables.variable_name
-  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
-  # path: custom_rules.match_conditions.operator
-  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
-  # path: custom_rules.match_conditions.transforms[*]
-  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
-  # path: custom_rules.rule_type
-  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
-  # path: custom_rules.rate_limit_duration
-  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
-  # path: custom_rules.rate_limit_threshold
-  #   condition: value >= 1
-  #   message:   must be at least 1
-  # path: custom_rules.group_rate_limit_by
-  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
-  # path: managed_rules.exclusion.match_variable
-  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
-  # path: managed_rules.exclusion.selector
-  #   source:    validation.NoZeroValues(...) - no translation rule yet, add one
-  # path: managed_rules.exclusion.selector_match_operator
-  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
-  # path: managed_rules.exclusion.excluded_rule_set.type
-  #   source:    validate.ValidateWebApplicationFirewallPolicyExclusionRuleSetType (unresolved: func ValidateWebApplicationFirewallPolicyExclusionRuleSetType not found in /home/dan/code/public/terraform-provider-azurerm/internal/services/network/validate)
-  # path: managed_rules.exclusion.excluded_rule_set.version
-  #   source:    validate.ValidateWebApplicationFirewallPolicyExclusionRuleSetVersion (unresolved: func ValidateWebApplicationFirewallPolicyExclusionRuleSetVersion not found in /home/dan/code/public/terraform-provider-azurerm/internal/services/network/validate)
-  # path: managed_rules.exclusion.excluded_rule_set.rule_group.rule_group_name
-  #   source:    validate.ValidateWebApplicationFirewallPolicyRuleGroupName (unresolved: func ValidateWebApplicationFirewallPolicyRuleGroupName not found in /home/dan/code/public/terraform-provider-azurerm/internal/services/network/validate)
-  # path: managed_rules.managed_rule_set.type
-  #   source:    validate.ValidateWebApplicationFirewallPolicyRuleSetType (unresolved: func ValidateWebApplicationFirewallPolicyRuleSetType not found in /home/dan/code/public/terraform-provider-azurerm/internal/services/network/validate)
-  # path: managed_rules.managed_rule_set.version
-  #   source:    validate.ValidateWebApplicationFirewallPolicyRuleSetVersion (unresolved: func ValidateWebApplicationFirewallPolicyRuleSetVersion not found in /home/dan/code/public/terraform-provider-azurerm/internal/services/network/validate)
-  # path: managed_rules.managed_rule_set.rule_group_override.rule_group_name
-  #   source:    validate.ValidateWebApplicationFirewallPolicyRuleGroupName (unresolved: func ValidateWebApplicationFirewallPolicyRuleGroupName not found in /home/dan/code/public/terraform-provider-azurerm/internal/services/network/validate)
-  # path: managed_rules.managed_rule_set.rule_group_override.rule.id
-  #   condition: length(value) > 0
-  #   message:   must not be empty
-  # path: managed_rules.managed_rule_set.rule_group_override.rule.action
-  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
-  # path: policy_settings.mode
-  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
-  # path: policy_settings.file_upload_limit_in_mb
-  #   condition: value >= 1 && value <= 4000
-  #   message:   must be between 1 and 4000
-  # path: policy_settings.max_request_body_size_in_kb
-  #   condition: value >= 8 && value <= 2000
-  #   message:   must be between 8 and 2000
-  # path: policy_settings.request_body_inspect_limit_in_kb
-  #   condition: value >= 0
-  #   message:   must be at least 0
-  # path: policy_settings.js_challenge_cookie_expiration_in_minutes
-  #   condition: value >= 5 && value <= 1440
-  #   message:   must be between 5 and 1440
-  # path: policy_settings.log_scrubbing.rule.match_variable
-  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
-  # path: policy_settings.log_scrubbing.rule.selector_match_operator
-  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
-  # path: tags
-  #   condition: length(value) <= 50
-  #   message:   [from tags.Validate: invalid when len(value) > 50]
-  #   source:    [from tags.Validate: invalid when len(value) > 50]
-  # path: tags
-  #   condition: length(value) <= 512
-  #   message:   [from tags.Validate: invalid when len(value) > 512]
-  #   source:    [from tags.Validate: invalid when len(value) > 512]
-  # path: tags
-  #   source:    [from tags.Validate] err != nil
-  # path: tags
-  #   condition: length(value) <= 256
-  #   message:   [from tags.Validate: invalid when len(value) > 256]
-  #   source:    [from tags.Validate: invalid when len(value) > 256]
+  validation {
+    condition = alltrue([
+      for k, v in var.web_application_firewall_policies : (
+        length(v.name) > 0
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.web_application_firewall_policies : (
+        length(v.resource_group_name) <= 90
+      )
+    ])
+    error_message = "[from resourcegroups.ValidateName: invalid when len(value) > 90]"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.web_application_firewall_policies : (
+        !endswith(v.resource_group_name, ".")
+      )
+    ])
+    error_message = "[from resourcegroups.ValidateName: must not end with \".\"]"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.web_application_firewall_policies : (
+        length(v.resource_group_name) != 0
+      )
+    ])
+    error_message = "[from resourcegroups.ValidateName: invalid when len(value) == 0]"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.web_application_firewall_policies : (
+        v.custom_rules == null || alltrue([for item in v.custom_rules : (item.rate_limit_threshold == null || (item.rate_limit_threshold >= 1))])
+      )
+    ])
+    error_message = "must be at least 1"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.web_application_firewall_policies : (
+        alltrue([for item in v.managed_rules.managed_rule_set : (item.rule_group_override == null || alltrue([for item in item.rule_group_override : (item.rule == null || alltrue([for item in item.rule : (length(item.id) > 0)]))]))])
+      )
+    ])
+    error_message = "must not be empty"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.web_application_firewall_policies : (
+        v.policy_settings == null || (v.policy_settings.file_upload_limit_in_mb == null || (v.policy_settings.file_upload_limit_in_mb >= 1 && v.policy_settings.file_upload_limit_in_mb <= 4000))
+      )
+    ])
+    error_message = "must be between 1 and 4000"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.web_application_firewall_policies : (
+        v.policy_settings == null || (v.policy_settings.max_request_body_size_in_kb == null || (v.policy_settings.max_request_body_size_in_kb >= 8 && v.policy_settings.max_request_body_size_in_kb <= 2000))
+      )
+    ])
+    error_message = "must be between 8 and 2000"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.web_application_firewall_policies : (
+        v.policy_settings == null || (v.policy_settings.request_body_inspect_limit_in_kb == null || (v.policy_settings.request_body_inspect_limit_in_kb >= 0))
+      )
+    ])
+    error_message = "must be at least 0"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.web_application_firewall_policies : (
+        v.policy_settings == null || (v.policy_settings.js_challenge_cookie_expiration_in_minutes == null || (v.policy_settings.js_challenge_cookie_expiration_in_minutes >= 5 && v.policy_settings.js_challenge_cookie_expiration_in_minutes <= 1440))
+      )
+    ])
+    error_message = "must be between 5 and 1440"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.web_application_firewall_policies : (
+        v.tags == null || (length(v.tags) <= 50)
+      )
+    ])
+    error_message = "[from tags.Validate: invalid when len(value) > 50]"
+  }
+  # Note: 25 additional provider-side validators are enforced at apply time but not mirrored as validation{} blocks here (bespoke or non-mechanically-translatable).
 }
 
