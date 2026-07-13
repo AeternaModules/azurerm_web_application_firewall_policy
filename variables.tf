@@ -75,8 +75,8 @@ EOT
             excluded_rules  = optional(list(string))
             rule_group_name = string
           })))
-          type    = optional(string) # Default: "OWASP"
-          version = optional(string) # Default: "3.2"
+          type    = optional(string)
+          version = optional(string)
         }))
         match_variable          = string
         selector                = string
@@ -86,18 +86,18 @@ EOT
         rule_group_override = optional(list(object({
           rule = optional(list(object({
             action  = optional(string)
-            enabled = optional(bool) # Default: false
+            enabled = optional(bool)
             id      = string
           })))
           rule_group_name = string
         })))
-        type    = optional(string) # Default: "OWASP"
+        type    = optional(string)
         version = string
       }))
     })
     custom_rules = optional(list(object({
       action              = string
-      enabled             = optional(bool) # Default: true
+      enabled             = optional(bool)
       group_rate_limit_by = optional(string)
       match_conditions = list(object({
         match_values = optional(list(string))
@@ -116,26 +116,50 @@ EOT
       rule_type            = string
     })))
     policy_settings = optional(object({
-      enabled                                   = optional(bool) # Default: true
+      enabled                                   = optional(bool)
       file_upload_enforcement                   = optional(bool)
-      file_upload_limit_in_mb                   = optional(number) # Default: 100
-      js_challenge_cookie_expiration_in_minutes = optional(number) # Default: 30
+      file_upload_limit_in_mb                   = optional(number)
+      js_challenge_cookie_expiration_in_minutes = optional(number)
       log_scrubbing = optional(object({
-        enabled = optional(bool) # Default: true
+        enabled = optional(bool)
         rule = optional(list(object({
-          enabled                 = optional(bool) # Default: true
+          enabled                 = optional(bool)
           match_variable          = string
           selector                = optional(string)
-          selector_match_operator = optional(string) # Default: "Equals"
+          selector_match_operator = optional(string)
         })))
       }))
-      max_request_body_size_in_kb      = optional(number) # Default: 128
-      mode                             = optional(string) # Default: "Prevention"
-      request_body_check               = optional(bool)   # Default: true
-      request_body_enforcement         = optional(bool)   # Default: true
-      request_body_inspect_limit_in_kb = optional(number) # Default: 128
+      max_request_body_size_in_kb      = optional(number)
+      mode                             = optional(string)
+      request_body_check               = optional(bool)
+      request_body_enforcement         = optional(bool)
+      request_body_inspect_limit_in_kb = optional(number)
     }))
   }))
+  validation {
+    condition = alltrue([
+      for k, v in var.web_application_firewall_policies : (
+        length(v.managed_rules.managed_rule_set) >= 1
+      )
+    ])
+    error_message = "Each managed_rule_set list must contain at least 1 items"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.web_application_firewall_policies : (
+        v.custom_rules == null || alltrue([for item in v.custom_rules : (length(item.match_conditions) >= 1)])
+      )
+    ])
+    error_message = "Each match_conditions list must contain at least 1 items"
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.web_application_firewall_policies : (
+        v.custom_rules == null || alltrue([for item in v.custom_rules : (alltrue([for item in item.match_conditions : (length(item.match_variables) >= 1)]))])
+      )
+    ])
+    error_message = "Each match_variables list must contain at least 1 items"
+  }
   # --- Unconfirmed validation candidates, derived from azurerm_web_application_firewall_policy's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
   # or a path that crosses a list-typed block (needs its own for_each wrapping).
